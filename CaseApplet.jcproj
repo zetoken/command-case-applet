@@ -1,0 +1,8 @@
+<JavaCardProject name="CaseApplet">
+<USER>
+<PKG name="net.ztn.smartcards.commandcase" aid="F0 01 02 03 04 05" major="1" minor="0">
+<APPLET aid="F0 01 02 03 04 05 00" instanceaid="" parameter="" authority="" privileges="" index="23656" name="CaseApplet"/>
+</PKG>
+<Libs/>
+</USER>
+</JavaCardProject>
