@@ -23,6 +23,11 @@ public class CaseApplet extends Applet {
 		}
 
 		byte[] buffer = apdu.getBuffer();
+
+		if (buffer[ISO7816.OFFSET_CLA] != (byte) 0x80) {
+			ISOException.throwIt(ISO7816.SW_CLA_NOT_SUPPORTED);
+		}
+
 		switch (buffer[ISO7816.OFFSET_INS]) {
 		case (byte) 0xC1:
 			processCase1(apdu);
@@ -50,6 +55,11 @@ public class CaseApplet extends Applet {
 		}
 	}
 
+	/**
+	 * Command Case 1 instruction: <code>80 C1 00 00</code>
+	 * 
+	 * @param apdu Incoming APDU
+	 */
 	void processCase1(APDU apdu) {
 		byte[] buffer = apdu.getBuffer();
 
@@ -58,6 +68,18 @@ public class CaseApplet extends Applet {
 		saveBuffer(buffer);
 	}
 
+	/**
+	 * Command Case 2 instruction: <code>80 C2 P1 P2</code>
+	 * <p>
+	 * <code>P1</code>: selection of the outgoing length
+	 * <ul>
+	 * <li><code>0</code> to use <code>le</code>
+	 * <li><code>1</code> to use <code>P2</code>
+	 * <li><code>2</code> to use <code>min(le, P2)</code>
+	 * </ul>
+	 * 
+	 * @param apdu Incoming APDU
+	 */
 	void processCase2(APDU apdu) {
 		byte[] buffer = apdu.getBuffer();
 
@@ -68,10 +90,16 @@ public class CaseApplet extends Applet {
 
 		saveBuffer(buffer);
 
-		apdu.setOutgoingLength(le);
-		apdu.sendBytes((short) 0, le);
+		short outgoingLength = getOutgoingLengthFromP1P2(buffer, le);
+		apdu.setOutgoingLength(outgoingLength);
+		apdu.sendBytes((short) 0, outgoingLength);
 	}
 
+	/**
+	 * Command Case 3 instruction: <code>80 C3 P1 P2 Lc UDC</code>
+	 * 
+	 * @param apdu Incoming APDU
+	 */
 	void processCase3(APDU apdu) {
 		byte[] buffer = apdu.getBuffer();
 
@@ -83,6 +111,18 @@ public class CaseApplet extends Applet {
 		saveBuffer(buffer);
 	}
 
+	/**
+	 * Command Case 2 instruction: <code>80 C4 P1 P2 Lc UDC Le</code>
+	 * <p>
+	 * <code>P1</code>: selection of the outgoing length
+	 * <ul>
+	 * <li><code>0</code> to use <code>le</code>
+	 * <li><code>1</code> to use <code>P2</code>
+	 * <li><code>2</code> to use <code>min(le, P2)</code>
+	 * </ul>
+	 * 
+	 * @param apdu Incoming APDU
+	 */
 	void processCase4(APDU apdu) {
 		byte[] buffer = apdu.getBuffer();
 		short lc = apdu.setIncomingAndReceive();
@@ -93,8 +133,9 @@ public class CaseApplet extends Applet {
 
 		saveBuffer(buffer);
 
-		apdu.setOutgoingLength(le);
-		apdu.sendBytes((short) 0, le);
+		short outgoingLength = getOutgoingLengthFromP1P2(buffer, le);
+		apdu.setOutgoingLength(outgoingLength);
+		apdu.sendBytes((short) 0, outgoingLength);
 	}
 
 	void processGetLastX(APDU apdu, byte[] lastX) {
@@ -117,5 +158,21 @@ public class CaseApplet extends Applet {
 		short length = (short) buffer.length < (short) lastBuffer.length ? (short) buffer.length
 				: (short) lastBuffer.length;
 		Util.arrayCopy(buffer, (short) 0, lastBuffer, (short) 0, length);
+	}
+
+	short getOutgoingLengthFromP1P2(byte[] buffer, short le) {
+		switch (buffer[ISO7816.OFFSET_P1]) {
+		case (byte) 0x00:
+			return le;
+		case (byte) 0x01:
+			return Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_P2]);
+		case (byte) 0x02:
+			byte leAsByte = (byte) (le & (short) 0x00FF);
+			return Util.makeShort((byte) 0x00,
+					buffer[ISO7816.OFFSET_P2] < leAsByte ? buffer[ISO7816.OFFSET_P2] : leAsByte);
+		default:
+			ISOException.throwIt(ISO7816.SW_INCORRECT_P1P2);
+			return (short) -1;
+		}
 	}
 }
