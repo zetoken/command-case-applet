@@ -6,6 +6,6 @@
 <Libs/>
 </USER>
 <DebugInfo>
-<Protocol name="T01"/>
+<Protocol name="T0"/>
 </DebugInfo>
 </JavaCardProject>

@@ -5,3 +5,5 @@ bookMarkInfo.xml
 LocalJavahomeProperty.xml
 LocalJChomeProperty.xml
 bin/
+CaseApplet.cap
+ant-javacard.jar

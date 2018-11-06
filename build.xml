@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ISO/IEC 7816 Command Case Applet" default="dist" basedir=".">
+
+    <description>Builds the project. </description>
+
+    <!-- Download  -->
+    <get src="https://github.com/martinpaljak/ant-javacard/releases/download/18.09.25/ant-javacard.jar" dest="." skipexisting="true"/>
+
+    <taskdef name="javacard" classname="pro.javacard.ant.JavaCard" classpath="ant-javacard.jar"/>
+
+    <property name="JC_KIT" value="..\java_card_kit-2_1_2"/>
+    <!-- WARNING: Next property must be set to false only with JC 2.1.2 -->
+    <property name="verify" value="false"/>
+
+    <target name="dist" description="Generate the applet">
+        <!-- Create the javacard applet -->
+        <tstamp/>
+        <javacard>
+            <cap aid="F0:01:02:03:04:05" output="CaseApplet.cap" sources="src/fr/ztn/smartcards/commandcase" version="1.0" jckit="${JC_KIT}" verify="false">
+                <applet class="fr.ztn.smartcards.commandcase.CaseApplet" aid="F0:01:02:03:04:05:00" />
+            </cap>
+        </javacard>
+    </target>
+
+    <target name="clean" description="clean up">
+        <!-- Delete the built applet -->
+        <delete dir="CaseApplet.cap"/>
+    </target>
+
+</project>
