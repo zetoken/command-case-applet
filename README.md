@@ -12,7 +12,8 @@ It targets ISO/IEC 7816 command cases 1 to 4.
  
 They aim at remembering the incoming APDU buffer, `Lc` and `Le` values for further use. They won't do anything more. Instructions `C2` and `C4` send back the APDU buffer content in the `UDR` field.
 
-3 dedicated instructions are also defined as command case 2 commands:
+4 dedicated instructions are also defined as command case 2 commands:
+  * `INS`=`C7` retrieves the last APDU buffer length
   * `INS`=`CB` retrieves the last stored APDU buffer content
   * `INS`=`CC` retrieves the last value of `Lc` field
   * `INS`=`CE` retrieves the last value of `Le` field

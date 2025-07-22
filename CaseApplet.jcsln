@@ -1,0 +1,11 @@
+<JavaCardSolution name="CaseApplet">
+    <JavaCardProjects>
+        <JavaCardProject path="CaseApplet.jcproj" />
+    </JavaCardProjects>
+    <Build>
+        <BuildDependon />
+    </Build>
+    <Platform>
+        <ChipPack Name="JAVACOS" />
+    </Platform>
+</JavaCardSolution>

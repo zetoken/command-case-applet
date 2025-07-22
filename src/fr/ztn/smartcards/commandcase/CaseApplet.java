@@ -1,9 +1,14 @@
 package fr.ztn.smartcards.commandcase;
 
-import javacard.framework.*;
+import javacard.framework.APDU;
+import javacard.framework.Applet;
+import javacard.framework.ISO7816;
+import javacard.framework.ISOException;
+import javacard.framework.Util;
 
 public class CaseApplet extends Applet {
     byte[] lastBuffer;
+    byte[] lastBufferLength;
     byte[] lastLc;
     byte[] lastLe;
 
@@ -12,6 +17,7 @@ public class CaseApplet extends Applet {
     }
 
     public CaseApplet() {
+    	lastBufferLength = new byte[2];
         lastBuffer = new byte[300];
         lastLc = new byte[2];
         lastLe = new byte[2];
@@ -44,6 +50,9 @@ public class CaseApplet extends Applet {
             case (byte) 0xC5:
                 processGetProtocolT(apdu);
                 break;
+			case (byte) 0xC7:
+				processGetLastX(apdu, lastBufferLength);
+				break;
             case (byte) 0xCB:
                 processGetLastX(apdu, lastBuffer);
                 break;
@@ -107,6 +116,7 @@ public class CaseApplet extends Applet {
         byte[] buffer = apdu.getBuffer();
 
         short lc = apdu.setIncomingAndReceive();
+
         saveLc(lc);
 
         saveLe((short) -1);
@@ -137,7 +147,8 @@ public class CaseApplet extends Applet {
         saveBuffer(buffer);
 
         short outgoingLength = getOutgoingLengthFromP1P2(buffer, le);
-        apdu.setOutgoingAndSend((short) 0, outgoingLength);
+        apdu.setOutgoingLength(outgoingLength);
+        apdu.sendBytes((short) 0, outgoingLength);
     }
 
     /**
@@ -147,7 +158,7 @@ public class CaseApplet extends Applet {
      * @param lastX
      */
     void processGetLastX(APDU apdu, byte[] lastX) {
-        byte[] buffer = apdu.getBuffer();
+        // byte[] buffer = apdu.getBuffer();
 
         short le = apdu.setOutgoing();
         apdu.setOutgoingLength(le);
@@ -177,7 +188,10 @@ public class CaseApplet extends Applet {
     }
 
     void saveBuffer(byte[] buffer) {
-        short length = (short) buffer.length < (short) lastBuffer.length ? (short) buffer.length
+    	Util.setShort(lastBufferLength, (short) 0, (short) buffer.length);
+    	
+        short length = (short) buffer.length < (short) lastBuffer.length 
+				? (short) buffer.length
                 : (short) lastBuffer.length;
         Util.arrayCopy(buffer, (short) 0, lastBuffer, (short) 0, length);
     }

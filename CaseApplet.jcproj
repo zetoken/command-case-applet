@@ -1,8 +1,40 @@
-<JavaCardProject name="CaseApplet">
-<USER>
-<PKG name="net.ztn.smartcards.commandcase" aid="F0 01 02 03 04 05" major="1" minor="0">
+<JavaCardProject name="CaseApplet" version="2">
+<USER location="src/">
+<PKG name="fr.ztn.smartcards.commandcase" aid="F0 01 02 03 04 05" major="1" minor="1">
 <APPLET aid="F0 01 02 03 04 05 00" instanceaid="" parameter="" authority="" privileges="" index="23656" name="CaseApplet"/>
 </PKG>
-<Libs/>
 </USER>
+<BuildPropertyConfig>
+<JCKit_Option>
+<OutType>EXP JCA CAP</OutType>
+<_SupportInt>1</_SupportInt>
+<_verbos>0</_verbos>
+<_nowarn>0</_nowarn>
+<_debug>1</_debug>
+<_nobanner>0</_nobanner>
+<_noverify>0</_noverify>
+<_mask>0</_mask>
+<_Adddition/>
+<ExportPaths/>
+</JCKit_Option>
+<JavaCompilerOption>
+<_Source>1.7</_Source>
+<_Target>1.7</_Target>
+<_Encoding>windows-1252</_Encoding>
+<_GenAllDegugInfo>1</_GenAllDegugInfo>
+<_GenNoWarnings>0</_GenNoWarnings>
+<_OutputAboutCompilerDoing>0</_OutputAboutCompilerDoing>
+<_OutputWhereDeprecatedApisAre>1</_OutputWhereDeprecatedApisAre>
+<_Adddition/>
+<directives/>
+</JavaCompilerOption>
+<Buildpaths>
+<ClasspathEntry>
+<CPE_CONTAINER name="java_card_kit-2_2_2" kind="K_DEFAULT_SYSTEM_JCRE"/>
+</ClasspathEntry>
+<ConvertorBinDirPath/>
+</Buildpaths>
+<ConverterInfo ConverterKid="FTSAFE" ConverterName="ft222"/>
+</BuildPropertyConfig>
+<solution_relate_to_project/>
 </JavaCardProject>
